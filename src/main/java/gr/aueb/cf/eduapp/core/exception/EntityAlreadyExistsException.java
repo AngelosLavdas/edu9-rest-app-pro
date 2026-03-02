@@ -1,5 +1,6 @@
 package gr.aueb.cf.eduapp.core.exception;
 
+
 public class EntityAlreadyExistsException extends AppGenericException {
 
     private static final String DEFAULT_CODE = "AlreadyExists";

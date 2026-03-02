@@ -1,6 +1,7 @@
 package gr.aueb.cf.eduapp.core.exception;
 
-public class EntityNotFoundException extends AppGenericException{
+
+public class EntityNotFoundException extends AppGenericException {
 
     private static final String DEFAULT_CODE = "NotFound";
 
