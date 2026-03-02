@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
@@ -35,13 +36,19 @@ public class UserRestController {
           }
 
           UserReadOnlyDTO userReadOnlyDTO = userService.saveUser(userInsertDTO);
+        //        Παράγει /api/v1/users/{uuid}
+        //        URI location = URI.create("/api/v1/users/" + userReadOnlyDTO.uuid());
 
-          URI location = URI.create("/api/v1/users/" + userReadOnlyDTO.uuid());
+        // Παράγει το πλήρες URL
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{uuid}")
+                .buildAndExpand(userReadOnlyDTO.uuid())
+                .toUri();
+
           return ResponseEntity
                   .created(location)
                   .body(userReadOnlyDTO);  //payload
-
-
     }
 }
 
