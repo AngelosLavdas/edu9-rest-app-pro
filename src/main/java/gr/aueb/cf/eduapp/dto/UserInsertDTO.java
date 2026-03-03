@@ -15,7 +15,7 @@ public record UserInsertDTO(
         @Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])^.{8,}$") // zero-length assertion -οποιοσδήποτε χαρακτήρaς, τουλάχιστον 8 οποιαδηποτε χαρακτήρες εκ των οποίων τουλάχιστον 1 ψηφίο, 1 πεζός χαρακτήρας ,1 κεφαλαίος, 1 ειδικός χαρακτήρας
         String password,
 
-        @NotBlank
+        @NotNull
         Long roleId
 ) {
 }
