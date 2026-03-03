@@ -1,8 +1,8 @@
 package gr.aueb.cf.eduapp.service;
 
-import gr.aueb.cf.eduapp.core.exception.EntityAlreadyExistsException;
-import gr.aueb.cf.eduapp.core.exception.EntityInvalidArgumentException;
-import gr.aueb.cf.eduapp.core.exception.EntityNotFoundException;
+import gr.aueb.cf.eduapp.core.exceptions.EntityAlreadyExistsException;
+import gr.aueb.cf.eduapp.core.exceptions.EntityInvalidArgumentException;
+import gr.aueb.cf.eduapp.core.exceptions.EntityNotFoundException;
 import gr.aueb.cf.eduapp.dto.UserInsertDTO;
 import gr.aueb.cf.eduapp.dto.UserReadOnlyDTO;
 import gr.aueb.cf.eduapp.mapper.Mapper;
@@ -12,10 +12,11 @@ import gr.aueb.cf.eduapp.repository.RoleRepository;
 import gr.aueb.cf.eduapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.util.UUID;
 
@@ -28,6 +29,14 @@ public class UserService implements IUserService{
     private final Mapper mapper;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+
+//        @Autowired
+//    public UserService(UserRepository userRepository, Mapper mapper, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+//        this.userRepository = userRepository;
+//        this.mapper = mapper;
+//        this.roleRepository = roleRepository;
+//        this.passwordEncoder = passwordEncoder;
+//    }
 
     @Override
     @Transactional(rollbackFor = {EntityAlreadyExistsException.class, EntityInvalidArgumentException.class}) // περιλαμβάνει ολα τα runtime exception + 2 που προσθέτουμε
@@ -56,6 +65,7 @@ public class UserService implements IUserService{
     }
 
     @Override
+    @PreAuthorize("hasAuthority('VIEW_USER')")
     @Transactional(readOnly = true)
     public UserReadOnlyDTO getUserByUUID(UUID uuid) throws EntityNotFoundException {
          try{
@@ -71,6 +81,7 @@ public class UserService implements IUserService{
     }
 
     @Override
+    @PreAuthorize("hasAuthority('VIEW_USER')")
     @Transactional(readOnly = true)
     public UserReadOnlyDTO getUserByUUIDDeletedFalse(UUID uuid) throws EntityNotFoundException {
         try{
