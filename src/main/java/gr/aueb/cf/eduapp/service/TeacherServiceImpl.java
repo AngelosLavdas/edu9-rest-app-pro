@@ -62,7 +62,7 @@ public class TeacherServiceImpl implements ITeacherService {
     private String uploadDir;
 
     @Override
-    @Transactional(rollbackFor = { EntityAlreadyExistsException.class, EntityInvalidArgumentException.class} )
+    @Transactional(rollbackFor = {EntityAlreadyExistsException.class, EntityInvalidArgumentException.class})
     public TeacherReadOnlyDTO saveTeacher(TeacherInsertDTO dto)
             throws EntityAlreadyExistsException, EntityInvalidArgumentException {
 
@@ -89,7 +89,7 @@ public class TeacherServiceImpl implements ITeacherService {
 //            Role role = roleRepository.findById(dto.userInsertDTO().roleId())
 //                    .orElseThrow(() -> new EntityInvalidArgumentException("Role","Role id=" + dto.userInsertDTO().roleId() + " invalid"));
             Role role = roleRepository.findById(teacherRole)
-                    .orElseThrow(() -> new EntityInvalidArgumentException("Role","Role id=" + teacherRole + " invalid"));
+                    .orElseThrow(() -> new EntityInvalidArgumentException("Role", "Role id=" + teacherRole + " invalid"));
 
             Teacher teacher = mapper.mapToTeacherEntity(dto);
 //            User user = mapper.mapToUserEntity(dto.userInsertDTO());
@@ -115,6 +115,7 @@ public class TeacherServiceImpl implements ITeacherService {
     public boolean isTeacherExists(String vat) {
         return teacherRepository.findByVat(vat).isPresent();
     }
+
 
     @Override
     @PreAuthorize("hasAuthority('VIEW_TEACHERS')")
@@ -170,7 +171,7 @@ public class TeacherServiceImpl implements ITeacherService {
 //            // user username and password updated TODO
 //            // other features to be updated TODO
 //
-//            teacherRepository.save(teacher);    // προαιρετικό
+//            teacherRepository.save(teacher);    // προαιρετικό αν γίνει managed
 //            log.info("Teacher with uuid={} updated successfully", dto.uuid());
 //            return mapper.mapToTeacherReadOnlyDTO(teacher);
 //        } catch (EntityNotFoundException e) {
@@ -191,7 +192,7 @@ public class TeacherServiceImpl implements ITeacherService {
     public TeacherReadOnlyDTO deleteTeacherByUUID(UUID uuid) throws EntityNotFoundException {
         try {
             Teacher teacher = teacherRepository.findByUuidAndDeletedFalse(uuid)
-                    .orElseThrow(() -> new EntityNotFoundException("Teacher","Teacher with uuid=" + uuid + " not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid + " not found"));
 
             teacher.softDelete();
             teacher.getPersonalInfo().softDelete();
@@ -214,7 +215,7 @@ public class TeacherServiceImpl implements ITeacherService {
 
         try {
             Teacher teacher = teacherRepository.findByUuid(uuid)
-                    .orElseThrow(() -> new EntityNotFoundException("Teacher","Teacher with uuid=" + uuid + " not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid + " not found"));
             log.debug("Get teacher by uuid={} returned successfully", uuid);
             return mapper.mapToTeacherReadOnlyDTO(teacher);
         } catch (EntityNotFoundException e) {
@@ -235,7 +236,7 @@ public class TeacherServiceImpl implements ITeacherService {
         //if (!principal.getUuid().equals(uuid)) throw new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid + " not authorized");
         try {
             Teacher teacher = teacherRepository.findByUuidAndDeletedFalse(uuid)
-                    .orElseThrow(() -> new EntityNotFoundException("Teacher","Teacher with uuid=" + uuid + " not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid + " not found"));
             log.debug("Get non-deleted teacher by uuid={} returned successfully", uuid);
             return mapper.mapToTeacherReadOnlyDTO(teacher);
         } catch (EntityNotFoundException e) {
@@ -246,7 +247,7 @@ public class TeacherServiceImpl implements ITeacherService {
 
     @Override
     @Retryable(
-            retryFor = { IOException.class, HttpServerErrorException.class },
+            retryFor = {IOException.class, HttpServerErrorException.class},
             maxAttempts = 3,
             backoff = @Backoff(delay = 2000, multiplier = 2, maxDelay = 10000)
     )
@@ -261,7 +262,7 @@ public class TeacherServiceImpl implements ITeacherService {
             Path filePath = Paths.get(uploadDirectory + savedName);
 
             Files.createDirectories(filePath.getParent());
-    //        Files.write(filePath, amkaFile.getBytes());
+            //        Files.write(filePath, amkaFile.getBytes());
             amkaFile.transferTo(filePath);  // safe for large files, more efficient
 
             Attachment attachment = new Attachment();
@@ -293,7 +294,7 @@ public class TeacherServiceImpl implements ITeacherService {
             throw e;
         } catch (IOException | HttpServerErrorException e) {
             log.error("Error saving attachment for teacher with amka={}", uuid, e);
-            throw new FileUploadException("Teacheramka","Error saving attachment for teacher with amka=" + uuid);
+            throw new FileUploadException("Teacheramka", "Error saving attachment for teacher with amka=" + uuid);
         }
     }
 
@@ -307,7 +308,8 @@ public class TeacherServiceImpl implements ITeacherService {
 //        Path filePath = Paths.get(uploadDirectory + savedName);
 //
 //        Files.createDirectories(filePath.getParent());
-////        Files.write(filePath, amkaFile.getBytes());
+
+    /// /        Files.write(filePath, amkaFile.getBytes());
 //        amkaFile.transferTo(filePath);  // safe for large files, more efficient
 //
 //        Attachment attachment = new Attachment();
@@ -356,7 +358,6 @@ public class TeacherServiceImpl implements ITeacherService {
 //            throw e;
 //        }
 //    }
-
     private String getFileExtension(String filename) {
         if (filename != null && filename.contains(".")) {
             return filename.substring(filename.lastIndexOf("."));
