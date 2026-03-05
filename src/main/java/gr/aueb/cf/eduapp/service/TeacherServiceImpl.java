@@ -231,12 +231,6 @@ public class TeacherServiceImpl implements ITeacherService {
     @PreAuthorize("hasAuthority('VIEW_TEACHER') or (hasAuthority('VIEW_ONLY_TEACHER') and @securityService.isOwnTeacherProfile(#uuid, authentication))")
     @Transactional(readOnly = true)
     public TeacherReadOnlyDTO getTeacherByUUIDDeletedFalse(UUID uuid) throws EntityNotFoundException {
-//        Authentication authentication =
-//                SecurityContextHolder.getContext().getAuthentication();
-//        User principal = (User) authentication.getPrincipal();
-//        System.out.println("PRINCIPAL" + principal.getUuid() + " principal username " + principal.getUsername());
-//        System.out.println("UUID" + uuid + "");
-        //if (!principal.getUuid().equals(uuid)) throw new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid + " not authorized");
         try {
             Teacher teacher = teacherRepository.findByUuidAndDeletedFalse(uuid)
                     .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid + " not found"));
@@ -300,31 +294,6 @@ public class TeacherServiceImpl implements ITeacherService {
             throw new FileUploadException("Teacheramka", "Error saving attachment for teacher with amka=" + uuid);
         }
     }
-
-//    public void saveAmkaFile(PersonalInfo personalInfo, MultipartFile amkaFile)
-//            throws IOException {
-//
-//        String originalFilename = amkaFile.getOriginalFilename();
-//        String savedName = UUID.randomUUID().toString() + getFileExtension(originalFilename);
-//
-//        String uploadDirectory = "uploads/";
-//        Path filePath = Paths.get(uploadDirectory + savedName);
-//
-//        Files.createDirectories(filePath.getParent());
-
-    /// /        Files.write(filePath, amkaFile.getBytes());
-//        amkaFile.transferTo(filePath);  // safe for large files, more efficient
-//
-//        Attachment attachment = new Attachment();
-//        attachment.setFilename(originalFilename);
-//        attachment.setSavedName(savedName);
-//        attachment.setFilePath(filePath.toString());
-//        attachment.setContentType(amkaFile.getContentType());
-//        attachment.setExtension(getFileExtension(originalFilename));
-//
-//        personalInfo.setAmkaFile(attachment);
-//        log.info("Attachment for teacher with amka={} saved", personalInfo.getAmka());
-//    }
 
 
     @Override
